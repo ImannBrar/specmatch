@@ -29,7 +29,7 @@ def get_conn() -> sqlite3.Connection:
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS records (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    record_id TEXT NOT NULL,
+    record_id TEXT NOT NULL UNIQUE,
     raw_text TEXT NOT NULL,
     category TEXT,
     unit TEXT,

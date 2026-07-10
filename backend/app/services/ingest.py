@@ -53,7 +53,7 @@ def ingest_records(conn: sqlite3.Connection) -> int:
     rows = _read_csv(SOURCE_CSV)
     now = datetime.now(timezone.utc).isoformat()
     conn.executemany(
-        "INSERT INTO records (record_id, raw_text, category, unit, quantity, ingested_at)"
+        "INSERT OR REPLACE INTO records (record_id, raw_text, category, unit, quantity, ingested_at)"
         " VALUES (:record_id, :raw_text, :category, :unit, :quantity, :ingested_at)",
         [{**row, "ingested_at": now} for row in rows],
     )
