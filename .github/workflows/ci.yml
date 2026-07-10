@@ -22,6 +22,23 @@ jobs:
       - name: Install dependencies
         run: pip install -r backend/requirements.txt
 
+      - name: Lint
+        run: |
+          pip install ruff==0.15.21
+          ruff check backend
+
       - name: Run tests
         working-directory: backend
         run: pytest
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Same first step a clean clone needs; compose requires the env file.
+      - name: Create env file
+        run: cp .env.example .env
+
+      - name: Build image
+        run: docker compose build
