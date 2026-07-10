@@ -15,3 +15,14 @@ def test_mid_score_is_yellow():
 
 def test_low_score_is_red():
     assert assign_tier(0.30, THRESHOLDS) is Tier.red
+
+
+def test_score_at_accept_boundary_is_green():
+    """Issue #2: accept_min is an inclusive lower bound, so a score of
+    exactly accept_min belongs in green, not yellow."""
+    assert assign_tier(0.85, THRESHOLDS) is Tier.green
+
+
+def test_score_at_review_boundary_is_yellow():
+    """review_min is likewise inclusive: exactly review_min is yellow."""
+    assert assign_tier(0.60, THRESHOLDS) is Tier.yellow
