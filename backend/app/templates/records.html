@@ -5,7 +5,7 @@
   <form method="get" action="/">
     <label for="category" class="muted">Category</label>
     <select id="category" name="category" onchange="this.form.submit()">
-      <option value="All" {% if selected_category is none %}selected{% endif %}>All categories</option>
+      <option value="" {% if selected_category is none %}selected{% endif %}>All categories</option>
       {% for cat in categories %}
       <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
       {% endfor %}
