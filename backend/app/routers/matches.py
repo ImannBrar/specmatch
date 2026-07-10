@@ -1,9 +1,11 @@
-"""Match endpoints. Stubbed — completing them to the frozen contracts in
-models/schemas.py is Task 4."""
+"""Match endpoints (Task 4), to the frozen contracts in models/schemas.py.
+Routers stay thin: the logic lives in services/match_store.py."""
 
 from fastapi import APIRouter, HTTPException, Query
 
+from app.core.errors import InvalidReviewError, MatchNotFoundError
 from app.models.schemas import MatchesResponse, MatchResult, ReviewRequest, Tier
+from app.services import match_store
 
 router = APIRouter()
 
@@ -14,13 +16,14 @@ def list_matches(
     limit: int = Query(default=50, ge=1, le=500),
     offset: int = Query(default=0, ge=0),
 ) -> MatchesResponse:
-    # TODO(Task 4): return persisted MatchResults, filterable by tier,
-    # shaped as MatchesResponse per models/schemas.py.
-    raise HTTPException(status_code=501, detail="Not implemented (Task 4)")
+    return match_store.list_matches(tier=tier, limit=limit, offset=offset)
 
 
 @router.post("/matches/{record_id}/review", response_model=MatchResult)
 def review_match(record_id: str, body: ReviewRequest) -> MatchResult:
-    # TODO(Task 4): persist the review decision (auditable) and return the
-    # updated MatchResult per models/schemas.py.
-    raise HTTPException(status_code=501, detail="Not implemented (Task 4)")
+    try:
+        return match_store.apply_review(record_id, body)
+    except MatchNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except InvalidReviewError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
